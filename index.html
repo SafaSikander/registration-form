@@ -1,0 +1,257 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Registration Form</title>
+  <style>
+    *{
+      box-sizing:border-box;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #89f7fe, #66a6ff);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }.container {
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 15px;
+  width: 440px;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+  animation: fadeIn 0.8s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 22px;
+  color: #4a4a4a;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #333;
+}
+
+input, select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  transition: border 0.3s, box-shadow 0.3s;
+}
+
+input:focus, select:focus {
+  border-color: #66a6ff;
+  outline: none;
+  box-shadow: 0 0 6px rgba(102,166,255,0.6);
+}
+
+.gender-group {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 6px;
+}
+
+.error {
+  color: #e63946;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  margin-top: 10px;
+  cursor: not-allowed;
+  opacity: 0.6;
+  transition: all 0.3s ease;
+}
+
+button.enabled {
+  cursor: pointer;
+  opacity: 1;
+}
+
+button.enabled:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+}
+
+.summary {
+  margin-top: 25px;
+  padding: 18px;
+  background: #f8f9fa;
+  border-left: 5px solid #66a6ff;
+  border-radius: 10px;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.summary h3 {
+  margin-bottom: 10px;
+  color: #333;
+}
+
+  </style>
+</head>
+<body><div class="container">
+  <h2>Registration Form</h2>
+  <form id="regForm"><div class="form-group">
+  <label>First Name</label>
+  <input type="text" id="firstName">
+</div>
+
+<div class="form-group">
+  <label>Last Name</label>
+  <input type="text" id="lastName">
+</div>
+
+<div class="form-group">
+  <label>Surname / Family Name</label>
+  <input type="text" id="surname">
+</div>
+
+<div class="form-group">
+  <label>Email</label>
+  <input type="email" id="email">
+</div>
+
+<div class="form-group">
+  <label>Password</label>
+  <input type="password" id="password">
+</div>
+
+<div class="form-group">
+  <label>Confirm Password</label>
+  <input type="password" id="confirmPassword">
+</div>
+
+<div class="form-group">
+  <label>Gender</label>
+  <div class="gender-group">
+    <label><input type="radio" name="gender" value="Male"> Male</label>
+    <label><input type="radio" name="gender" value="Female"> Female</label>
+  </div>
+</div>
+
+<div class="form-group">
+  <label>Country</label>
+  <select id="country">
+    <option value="">-- Select Country --</option>
+    <option value="Pakistan">Pakistan</option>
+    <option value="India">India</option>
+    <option value="USA">USA</option>
+  </select>
+</div>
+
+<div class="form-group">
+  <label><input type="checkbox" id="terms"> I agree to Terms & Conditions</label>
+</div>
+
+<button type="submit" id="submitBtn" disabled>Register</button>
+
+  </form>  <div id="summary"></div>
+</div><script>
+  const form = document.getElementById('regForm');
+  const submitBtn = document.getElementById('submitBtn');
+
+  function showError(input, message) {
+    let error = input.parentElement.querySelector('.error');
+    if (!error) {
+      error = document.createElement('div');
+      error.classList.add('error');
+      input.parentElement.appendChild(error);
+    }
+    error.textContent = message;
+  }
+
+  function clearError(input) {
+    const error = input.parentElement.querySelector('.error');
+    if (error) error.textContent = '';
+  }
+
+  function validateForm() {
+    let valid = true;
+
+    const firstName = document.getElementById('firstName');
+    if (firstName.value.length < 5) {
+      showError(firstName, 'First Name must be at least 5 characters');
+      valid = false;
+    } else clearError(firstName);
+
+    const email = document.getElementById('email');
+    if (!email.value.includes('@')) {
+      showError(email, 'Email must contain @');
+      valid = false;
+    } else clearError(email);
+
+    const password = document.getElementById('password');
+    if (!(password.value.length >= 8 && /[A-Z]/.test(password.value))) {
+      showError(password, 'Password must be 8 chars & 1 uppercase');
+      valid = false;
+    } else clearError(password);
+
+    const confirmPassword = document.getElementById('confirmPassword');
+    if (confirmPassword.value !== password.value) {
+      showError(confirmPassword, 'Passwords do not match');
+      valid = false;
+    } else clearError(confirmPassword);
+
+    const gender = document.querySelector('input[name="gender"]:checked');
+    if (!gender) {
+      valid = false;
+    }
+
+    const country = document.getElementById('country');
+    if (country.value === '') valid = false;
+
+    const terms = document.getElementById('terms');
+    if (!terms.checked) valid = false;
+
+    submitBtn.disabled = !valid;
+    submitBtn.classList.toggle('enabled', valid);
+
+    return valid;
+  }
+
+  form.addEventListener('input', validateForm);
+  form.addEventListener('change', validateForm);
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    if (!validateForm()) return;
+
+    const summary = document.getElementById('summary');
+    summary.innerHTML = '';
+    const box = document.createElement('div');
+    box.classList.add('summary');
+
+    box.innerHTML = `
+      <h3>Registration Successful</h3>
+      <p><strong>Name:</strong> ${firstName.value} ${lastName.value}</p>
+      <p><strong>Email:</strong> ${email.value}</p>
+      <p><strong>Country:</strong> ${country.value}</p>
+      <p><strong>Gender:</strong> ${document.querySelector('input[name="gender"]:checked').value}</p>
+    `;
+
+    summary.appendChild(box);
+  });
+</script></body>
+</html>
